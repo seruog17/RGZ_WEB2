@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block script %}
+<script src="{{ url_for('static', filename='index.js') }}"></script>
+{% endblock %}
+
+{% block main %}
+    <h1 class="welcome-title">Добро пожаловать на сайт знакомств!</h1>
+    <div class="auth-container">
+        <h1>Вход</h1>
+        <div>
+            <label>
+                Логин <input type="text" id="username" required>
+                <div id="username-error" class="error-message"></div>
+            </label>
+        </div>
+
+        <div>
+            <label>
+                Пароль: <input type="password" id="password" required>
+                <div id="password-error" class="error-message"></div>
+            </label>
+        </div>
+        <div class="button-container">
+            <button class="auth-button" onclick="login()" style="margin-right: 10px;">Вход</button>
+            <button class="auth-button" onclick="registration()">Регистрация</button>
+        </div>
+    </div>
+{% endblock %}

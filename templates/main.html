@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block script %}
+<script src="{{ url_for('static', filename='index.js') }}"></script>
+{% endblock %}
+
+{% block main %}
+    <h1 class="welcome-title">Добро пожаловать на сайт знакомств!</h1>
+    {% if not profile_filled %}
+        <p id="unavailable-message">Прежде чем начать поиск, заполните свою анкету.</p>
+    {% endif %}
+    <div class="button-container">
+        <button class="action-button" {% if profile_filled %}disabled{% endif %} onclick="openModal()">Заполнить анкету</button>
+        <button class="action-button" onclick="openEditProfileModal()">Редактировать анкету</button>
+        <button class="action-button" onclick="deleteAccount()">Удалить профиль</button>
+        <button class="action-button" onclick="logout()">Выйти</button>
+    </div>
+
+    <div id="profileModal" class="modal">
+        <div class="modal-content">
+            <h2>Заполните анкету</h2>
+            <form id="profile-form">
+                <label>Имя: <input type="text" id="name" required></label>
+                <label>Возраст: <input type="number" id="age" min="18" required></label>
+                <label>Ваш пол:
+                    <select id="gender" required>
+                        <option value="male">Мужской</option>
+                        <option value="female">Женский</option>
+                    </select>
+                </label>
+                <label>Пол для поиска:
+                    <select id="looking_for" required>
+                        <option value="male">Мужской</option>
+                        <option value="female">Женский</option>
+                    </select>
+                </label>
+                <label>О себе: <textarea id="about"></textarea></label>
+                <button type="button" class="modal-button" onclick="submitProfile()">Отправить</button>
+                <button type="button" class="modal-button close-btn" onclick="closeModal()">Закрыть</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="editProfileModal" class="modal">
+        <div class="modal-content">
+            <h2>Редактировать анкету</h2>
+            <form id="edit-profile-form">
+                <label>Имя: <input type="text" id="edit-name" required></label>
+                <label>Возраст: <input type="number" id="edit-age" min="18" required></label>
+                <label>Ваш пол:
+                    <select id="edit-gender" required>
+                        <option value="male">Мужской</option>
+                        <option value="female">Женский</option>
+                    </select>
+                </label>
+                <label>Пол для поиска:
+                    <select id="edit-looking_for" required>
+                        <option value="male">Мужской</option>
+                        <option value="female">Женский</option>
+                    </select>
+                </label>
+                <label>О себе: <textarea id="edit-about"></textarea></label>
+                <label for="edit-is_hidden">Скрыть анкету:</label>
+                <input type="checkbox" id="edit-is_hidden" {% if profile and profile.is_hidden %}checked{% endif %}>
+
+                <button type="button" class="modal-button" onclick="submitEditProfile()">Сохранить изменения</button>
+                <button type="button" class="modal-button close-btn" onclick="closeEditProfileModal()">Закрыть</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="profile-info">
+        <h2 style="text-align: center;">Моя анкета</h2>
+        {% if profile %}
+            <p><b>Имя:</b> {{ profile.name }}</p>
+            <p><b>Возраст:</b> {{ profile.age }}</p>
+            <p><b>Пол:</b> {{ profile.gender }}</p>
+            <p><b>Ищу:</b> {{ profile.looking_for }}</p>
+            <p><b>О себе:</b> {{ profile.about }}</p>
+
+            {% if profile.is_hidden %}
+                <p><b>Статус анкеты:</b> Скрыта</p>
+            {% else %}
+                <p><b>Статус анкеты:</b> Видна</p>
+            {% endif %}
+        {% else %}
+            <p>Вы еще не заполнили анкету.</p>
+        {% endif %}
+    </div>
+
+    <div id="search-section">
+        <h2 style="text-align: center;">Поиск анкет</h2>
+        <form id="search-form">
+            <label>Имя: <input type="text" id="search-name"></label>
+            <label>Возраст: <input type="number" id="search-age" min="18"></label>
+            <button type="button" class="search-button" onclick="searchProfiles()">Найти</button>
+        </form>
+
+        <div id="search-results"></div>
+        <button id="load-more-btn" class="load-more-button" onclick="loadMoreProfiles()" style="display: none;">Следующие</button>
+    </div>
+{% endblock %}
